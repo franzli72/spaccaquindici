@@ -88,7 +88,7 @@ const Game = () => {
           <Text style={styles.gameTitle}>SPACCA QUINDICI</Text>
         </View>
         <Board tiles={tiles} onPressTile={handlePressTile} />
-        {correctTiles <= 5 ? (
+        {correctTiles <= 15 ? (
           <View style={{ alignItems: 'center' }}>
             <Text style={styles.correctTilesLabel}>Correct Tiles</Text>
             <Text style={styles.correctTilesValue}>{correctTiles}</Text>
