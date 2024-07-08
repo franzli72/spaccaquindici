@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, SafeAreaView } from 'react-native';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { Audio } from 'expo-av';
+import React, { useState, useEffect, useRef } from "react";
+import { Text, View, StyleSheet, SafeAreaView } from "react-native";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { Audio } from "expo-av";
 import Board from "./Board";
 
 const Game = () => {
@@ -12,7 +12,7 @@ const Game = () => {
   // Function to generate random tiles
   const generateTiles = () => {
     const shuffledNumbers = [...Array(16).keys()].sort(
-      () => Math.random() - 0.5,
+      () => Math.random() - 0.5
     );
     setTiles(shuffledNumbers);
     findBlankTile(shuffledNumbers); // Find the initial empty tile position
@@ -46,10 +46,15 @@ const Game = () => {
   // Function to check win condition
   const checkWin = (newTiles) => {
     var correctTiles = 0;
-    for (let i = 0; i< newTiles.length - 1; i++) {
-      if (newTiles[i] == i+1) {
+    for (let i = 0; i < newTiles.length - 1; i++) {
+      if (newTiles[i] == i + 1) {
         correctTiles += 1;
       }
+    }
+    if (correctTiles >= 15) {
+      playSound(0);
+    } else {
+      playSound(2);
     }
     setCorrectTiles(correctTiles);
     return correctTiles;
@@ -58,23 +63,32 @@ const Game = () => {
   const playSound = async (type) => {
     // Initialize the sound
 
+    const sound = useRef(new Audio.Sound());
+
     const sounds = [
-      './assets/sounds/708605__marevnik__ui_pop_up.mp3',
-      './assets/sounds/651464__darcyadam__dca-button-dialogue.wav',
-      './assets/sounds/683100__florianreichelt__mutliple-bubbles-bursting.mp3',
+      require("./assets/sounds/708605__marevnik__ui_pop_up.mp3"),
+      require("./assets/sounds/651464__darcyadam__dca-button-dialogue.wav"),
+      require("./assets/sounds/683100__florianreichelt__mutliple-bubbles-bursting.mp3"),
     ];
+
+    // Register the listener
+    const onPlaybackStatusUpdate = (status) => {
+      console.log("Playback status updated:", status);
+    };
+
+    sound.current.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
 
     console.log(sounds[type]);
 
-    const sound = new Audio.Sound();
     try {
-      await sound.loadAsync(sounds[type]);
-      await sound.playAsync();
-      await sound.unloadAsync();
+      await sound.current.loadAsync(sounds[type], { shouldPlay: true });
+      await sound.current.playAsync();
+      sound.current.setOnPlaybackStatusUpdate(null);
+      sound.current.unloadAsync();
     } catch (error) {
-      console.error('Error in sound playback', error)
+      console.error("Error in sound playback", error);
     }
-  }
+  };
 
   useEffect(() => {
     generateTiles();
@@ -83,21 +97,25 @@ const Game = () => {
   return (
     <View style={styles.container}>
       <SafeAreaView>
-        <View style={{ alignItems: 'center', marginTop: 15 }}>
-          <FontAwesome6 name="hammer" size={60} color="yellow" onPress={() => (generateTiles())} />
-          <Text style={styles.gameTitle}>SPACCA QUINDICI</Text>
+        <View style={{ alignItems: "center", marginTop: 15 }}>
+          <FontAwesome6
+            name="hammer"
+            size={60}
+            color="yellow"
+            onPress={() => generateTiles()}
+          />
+          <Text style={styles.gameTitle}>Break 15</Text>
         </View>
         <Board tiles={tiles} onPressTile={handlePressTile} />
         {correctTiles <= 15 ? (
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: "center" }}>
             <Text style={styles.correctTilesLabel}>Correct Tiles</Text>
             <Text style={styles.correctTilesValue}>{correctTiles}</Text>
           </View>
         ) : (
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: "center" }}>
             <Text style={styles.correctTilesLabel}>YOU WON!</Text>
           </View>
-
         )}
       </SafeAreaView>
     </View>
@@ -107,26 +125,26 @@ const Game = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1, // This makes the View fill the entire screen
-    backgroundColor: '#0f172a', // Set your desired background color here
-    alignItems: 'center', // Centers the Board component horizontally
-    justifyContent: 'center', // Centers the Board component vertically
+    backgroundColor: "#0f172a", // Set your desired background color here
+    alignItems: "center", // Centers the Board component horizontally
+    justifyContent: "center", // Centers the Board component vertically
   },
   gameTitle: {
-    color: 'red',
-    fontSize: 32,
-    fontWeight: 'bold',
+    color: "red",
+    fontSize: 64,
+    fontWeight: "bold",
     padding: 10,
   },
   correctTilesLabel: {
-    color: 'white',
+    color: "white",
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   correctTilesValue: {
-    color: 'white',
+    color: "white",
     fontSize: 128,
-    fontWeight: 'bold',
-  }
+    fontWeight: "bold",
+  },
 });
 
 export default Game;
