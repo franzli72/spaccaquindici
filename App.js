@@ -8,6 +8,25 @@ const Game = () => {
   const [tiles, setTiles] = useState([]); // Array to hold tile values
   const [blankTileIndex, setBlankTileIndex] = useState(null); // Index of the empty tile
   const [correctTiles, setCorrectTiles] = useState(0);
+  const sound = useRef(new Audio.Sound());
+
+  useEffect(() => {
+    // Set the audio mode
+    async () => {
+      try {
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: false,
+          interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+          playsInSilentModeIOS: true,
+          shouldDuckAndroid: true,
+          interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+          playThroughEarpieceAndroid: false,
+        });
+      } catch (error) {
+        console.error("Error setting audio mode", error);
+      }
+    };
+  });
 
   // Function to generate random tiles
   const generateTiles = () => {
@@ -52,7 +71,7 @@ const Game = () => {
       }
     }
     if (correctTiles >= 15) {
-      playSound(0);
+      playSound(1);
     } else {
       playSound(2);
     }
@@ -61,10 +80,6 @@ const Game = () => {
   };
 
   const playSound = async (type) => {
-    // Initialize the sound
-
-    const sound = useRef(new Audio.Sound());
-
     const sounds = [
       require("./assets/sounds/708605__marevnik__ui_pop_up.mp3"),
       require("./assets/sounds/651464__darcyadam__dca-button-dialogue.wav"),
@@ -78,13 +93,14 @@ const Game = () => {
 
     sound.current.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
 
-    console.log(sounds[type]);
-
     try {
       await sound.current.loadAsync(sounds[type], { shouldPlay: true });
       await sound.current.playAsync();
-      sound.current.setOnPlaybackStatusUpdate(null);
-      sound.current.unloadAsync();
+
+      // sound.current.setOnPlaybackStatusUpdate(null);
+      if (sound.current) {
+        await sound.current.unloadAsync();
+      }
     } catch (error) {
       console.error("Error in sound playback", error);
     }
