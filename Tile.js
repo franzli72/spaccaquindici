@@ -1,24 +1,36 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
+const tileColors = [
+  { id: 0, backgroundColor: "black", color: "black" },
+  { id: 1, backgroundColor: "red", color: "white" },
+  { id: 2, backgroundColor: "white", color: "red" },
+  { id: 3, backgroundColor: "red", color: "white" },
+  { id: 4, backgroundColor: "white", color: "red" },
+  { id: 5, backgroundColor: "white", color: "red" },
+  { id: 6, backgroundColor: "red", color: "white" },
+  { id: 7, backgroundColor: "white", color: "red" },
+  { id: 8, backgroundColor: "red", color: "white" },
+  { id: 9, backgroundColor: "red", color: "white" },
+  { id: 10, backgroundColor: "white", color: "red" },
+  { id: 11, backgroundColor: "red", color: "white" },
+  { id: 12, backgroundColor: "white", color: "red" },
+  { id: 13, backgroundColor: "red", color: "white" },
+  { id: 14, backgroundColor: "white", color: "red" },
+  { id: 15, backgroundColor: "red", color: "white" },
+]
 const Tile = ({ value, onPress }) => {
 
   const tileStyle = () => {
     if (value === 0) {
       return styles.emptyTile;
-    } else if (value % 2 === 0) {
-      return styles.evenTile;
     } else {
-      return styles.oddTile;
+      return [styles.tile, {backgroundColor: tileColors[value].backgroundColor}];
     }
   };
 
   const textStyle = () => {
-    if (value % 2 === 0) {
-      return styles.evenText;
-    } else {
-      return styles.oddText;
-    }
+      return [styles.text, {color: tileColors[value].color}];
   };
 
   return (
@@ -29,18 +41,8 @@ const Tile = ({ value, onPress }) => {
 };
 
 const styles = StyleSheet.create({
-  evenTile: {
+  tile: {
     backgroundColor: "#FAF3E0",
-    margin: 5,
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    width: 70,
-    height: 70,
-    borderRadius: 10,
-  },
-  oddTile: {
-    backgroundColor: "red",
     margin: 5,
     padding: 10,
     alignItems: "center",
@@ -59,16 +61,12 @@ const styles = StyleSheet.create({
     height: 70,
     borderRadius: 10,
   },
-  evenText: {
+  text: {
     fontSize: 36,
     fontWeight: "bold",
     color: "black",
   },
-  oddText: {
-    fontSize: 36,
-    fontWeight: "bold",
-    color: "white",
-  },
+  
 });
 
 export default Tile;
