@@ -28,7 +28,7 @@ const Board = ({ tiles, onPressTile }) => {
 
 const styles = StyleSheet.create({
   board: {
-    flex: 1,
+    // flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },

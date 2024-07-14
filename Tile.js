@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Dimensions, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 const tileColors = [
   { id: 0, backgroundColor: "black", color: "black" },
@@ -20,6 +20,8 @@ const tileColors = [
   { id: 15, backgroundColor: "red", color: "white" },
 ]
 const Tile = ({ value, onPress }) => {
+  const {fontScale} = Dimensions.get('window');
+  const styles = makeStyles(fontScale);
 
   const tileStyle = () => {
     if (value === 0) {
@@ -40,7 +42,7 @@ const Tile = ({ value, onPress }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = fontScale => StyleSheet.create({
   tile: {
     backgroundColor: "#FAF3E0",
     margin: 5,
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   text: {
-    fontSize: 36,
+    fontSize: 36 / fontScale,
     fontWeight: "bold",
     color: "black",
   },

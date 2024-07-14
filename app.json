@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "ios": {
@@ -29,7 +29,10 @@
       [
         "expo-font",
         {
-          "fonts": ["assets/fonts/BubbleFont.ttf"]
+          "fonts": [
+            "./assets/fonts/BubbleFont.otf",
+            "./assets/fonts/ChikiBubbles.otf"
+          ]
         }
       ]
     ]
